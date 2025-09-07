@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="imageFile" accept="image/*" id="imageFile"/>
+        <button type="submit">upload and predict</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", async(e)=> {
+        e.preventDefault();
+
+        const imageFile = document.getElementById("imageFile").files[0];
+        if(!imageFile) {
+            alert("Please select an image");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", imageFile)
+
+        try{
+            const response = await fetch("http://localhost:5000/predict", {
+                method:"POST",
+                body:formData,
+            });
+
+            const data = await response.json();
+            if(response.ok) {
+                console.log("image sent");
+            } else {
+                console.error("failed");
+            }
+
+        } catch (error) {
+            console.error("Error", error);
+        }
+    });
+
+    </script>
+
+</body>
+</html>
